@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>My Clubs – Golf Tracker</title>
+        <!-- Shared stylesheet for layout and table/button styling -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+
+    <body>
+        <div class="container">
+            <!-- Page title -->
+            <h1>My Clubs</h1>
+
+            <!-- Primary navigation used across the site -->
+            <nav>
+                <nav>
+                    <a href="/">Home</a>
+                    <a href="/clubs">My Clubs</a>
+                    <a href="/shots">Log &amp; View Shots</a>
+                    <a href="/stats">View Stats</a>
+                    <span class="nav-user">User: {{ session.username }}</span>
+                    <a href="/logout">Log out</a>
+                </nav>
+            </nav>
+
+            <!-- Current bag -->
+            <h2>Current Bag</h2>
+            {% if clubs %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Club #</th>
+                            <th>Loft (°)</th>
+                            <th>Club &amp; Shaft</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for club in clubs %}
+                            <tr>
+                                <td>{{ club.name }}</td>
+                                <td>
+                                    {% if club.loft is not none %}
+                                        {{ club.loft }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if club.notes %}
+                                        {{ club.notes }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                <!-- Edit as a styled button -->
+                                        <button type="button" onclick="window.location.href='/clubs/{{ club.id }}/edit';">
+                                            Edit
+                                        </button>
+
+                                <!-- Delete keeps the POST form -->
+                                        <form action="/clubs/{{ club.id }}/delete" method="post" style="display:inline;">
+                                            <button type="submit" onclick="return confirm('Delete this club and all its shots?');">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>You haven’t added any clubs yet.</p>
+            {% endif %}
+
+            <!-- Add new club -->
+            <h2>Add a New Club</h2>
+            <form action="/clubs" method="post">
+                <p>
+                    <label>
+                        Club#:
+                        <select name="name" required>
+                            <option value="">-- Select a club --</option>
+                            <option value="Driver">Driver</option>
+                            <option value="Mini-Driver">Mini-Driver</option>
+
+                            <option value="3 Wood">3 Wood</option>
+                            <option value="4 Wood">4 Wood</option>
+                            <option value="5 Wood">5 Wood</option>
+                            <option value="7 Wood">7 Wood</option>
+                            <option value="9 Wood">9 Wood</option>
+                            <option value="11 Wood">11 Wood</option>
+
+                            <option value="2 Hybrid">2 Hybrid</option>
+                            <option value="3 Hybrid">3 Hybrid</option>
+                            <option value="4 Hybrid">4 Hybrid</option>
+
+                            <option value="2 Iron">2 Iron</option>
+                            <option value="3 Iron">3 Iron</option>
+                            <option value="4 Iron">4 Iron</option>
+                            <option value="5 Iron">5 Iron</option>
+                            <option value="6 Iron">6 Iron</option>
+                            <option value="7 Iron">7 Iron</option>
+                            <option value="8 Iron">8 Iron</option>
+                            <option value="9 Iron">9 Iron</option>
+
+                            <option value="PW">PW</option>
+                            <option value="GW">GW</option>
+                            <option value="AW">AW</option>
+                            <option value="SW">SW</option>
+                            <option value="LW">LW</option>
+
+                            <option value="Putter">Putter</option>
+                        </select>
+                    </label>
+                </p>
+
+                <p>
+                    <label>
+                        Loft (degrees):
+                        <input type="number" step="0.25" name="loft">
+                    </label>
+                </p>
+
+                <!-- Free-text description of head + shaft for display in lists and stats -->
+                <p>
+                    <label>
+                        Club &amp; Shaft:
+                        <input type="text" name="notes">
+                    </label>
+                </p>
+
+                <p>
+                    <button type="submit">Add club</button>
+                </p>
+            </form>
+        </div>
+    </body>
+
+</html>

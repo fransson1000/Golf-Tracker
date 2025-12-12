@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Log In – Golf Tracker</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Welcome to Golf Tracker</h1>
+
+            <p>
+                Here you can set up your golf bag, log practice shots, and later
+                review your averages and dispersion to see which clubs really
+                belong in the bag.
+            </p>
+
+            <nav>
+                <a href="/login">Log In</a>
+                <a href="/register">Register</a>
+            </nav>
+
+            <form action="/login" method="post">
+                <p>
+                    <label>
+                        Username:
+                        <input type="text" name="username" required>
+                    </label>
+                </p>
+
+                <p>
+                    <label>
+                        Password:
+                        <input type="password" name="password" required>
+                    </label>
+                </p>
+
+                <p>
+                    <button type="submit">Log In</button>
+                </p>
+            </form>
+
+            <p>
+                Don’t have an account yet?
+                <a href="/register">Register here</a>.
+            </p>
+        </div>
+    </body>
+
+</html>

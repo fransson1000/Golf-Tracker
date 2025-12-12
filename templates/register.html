@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Register – Golf Tracker</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Register</h1>
+
+            <!-- Simple nav to keep login/register pages consistent -->
+            <nav>
+                <a href="/login">Log In</a>
+                <a href="/register">Register</a>
+            </nav>
+
+            <form action="/register" method="post">
+                <p>
+                    <label>
+                        Username:
+                        <input type="text" name="username" required>
+                    </label>
+                </p>
+
+                <p>
+                    <label>
+                        Password:
+                        <input type="password" name="password" required>
+                    </label>
+                </p>
+
+                <p>
+                    <label>
+                        Confirm password:
+                        <input type="password" name="confirmation" required>
+                    </label>
+                </p>
+
+                <p>
+                    <button type="submit">Register</button>
+                </p>
+            </form>
+
+            <p>
+                Already have an account?
+                <a href="/login">Log in</a>
+            </p>
+        </div>
+    </body>
+
+</html>

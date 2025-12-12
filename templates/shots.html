@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Shots – Golf Tracker</title>
+        <!-- Shared stylesheet for layout and table/button styling -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+
+    <body>
+        <div class="container">
+            <!-- Page title -->
+            <h1>Shots</h1>
+
+            <!-- Primary navigation used across the site -->
+            <nav>
+                <a href="/">Home</a>
+                <a href="/clubs">My Clubs</a>
+                <a href="/shots">Log &amp; View Shots</a>
+                <a href="/stats">View Stats</a>
+                <span class="nav-user">User: {{ session.username }}</span>
+                <a href="/logout">Log out</a>
+            </nav>
+
+            <h2>Log a Shot</h2>
+
+            <!-- POSTs back to /shots; the same route also lists all shots on GET -->
+            <form action="/shots" method="post">
+                <p>
+                    <label>
+                        Date:
+                        <!-- Date is optional; server defaults to today if left blank -->
+                        <input type="date" name="date">
+                    </label>
+                </p>
+
+                <p>
+                    <label>
+                        Club#:
+                        <!-- Dropdown is populated from the clubs table (id, name, notes) -->
+                        <select name="club_id" required>
+                            <option value="">-- Select a club --</option>
+                            {% for club in clubs %}
+                                <option value="{{ club.id }}">
+                                    {{ club.name }}
+                                    {% if club.notes %} – {{ club.notes }}{% endif %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </p>
+
+                <p>
+                    <label>
+                        Distance (yards):
+                        <!-- Stored as yards; meters are computed only for display elsewhere -->
+                        <input type="number" step="0.1" name="distance" required>
+                    </label>
+                </p>
+
+                <p>
+                    <label>
+                        Result (e.g. Center, Cut, Slice, Pull):
+                        <!-- Free-text result; used to classify left/center/right in stats -->
+                        <input type="text" name="result">
+                    </label>
+                </p>
+
+                <p>
+                    <label>
+                        Context:
+                        <!-- Simple categorical field for where the shot was hit -->
+                        <select name="context">
+                            <option value="Range">Range</option>
+                            <option value="Course">Course</option>
+                            <option value="Simulator">Simulator</option>
+                        </select>
+                    </label>
+                </p>
+
+                <p>
+                    <button type="submit">Save Shot</button>
+                </p>
+            </form>
+
+            <!-- Table of all logged shots, newest first, grouped by bag order -->
+            <h2>All Logged Shots</h2>
+
+            <!-- Date filter form for the shot list -->
+            <form action="/shots" method="get" class="filter-form">
+                <p>
+                    <label>
+                        Date:
+                        <input type="date" name="date" value="{{ selected_date or '' }}">
+                    </label>
+                    <button type="submit" class="btn">Show this date</button>
+                    <a href="/shots" class="btn">Show all dates</a>
+                </p>
+            </form>
+
+            {% if selected_date %}
+                <p>Currently showing shots for <strong>{{ selected_date }}</strong>.</p>
+            {% endif %}
+
+            {% if shots %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Club #</th>
+                            <th>Distance (yd / m)</th>
+                            <th>Result</th>
+                            <th>Context</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for shot in shots %}
+                            <tr>
+                                <td>{{ shot.date }}</td>
+                                <td>
+                                    {{ shot.club_name }}
+                                    {% if shot.club_notes %}
+                                        <br><small>{{ shot.club_notes }}</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ shot.distance }} yd
+                                    ({{ (shot.distance * 0.9144) | round(1) }} m)
+                                </td>
+                                <td>{% if shot.result %}
+                                    {{ shot.result|capitalize }}
+                                {% endif %}
+                                </td>
+                                <td>{{ shot.context }}</td>
+                                <td>
+                                    <form action="/shots/{{ shot.id }}/delete" method="post" style="display:inline;">
+                                        <button type="submit" onclick="return confirm('Delete this shot?');">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                {% if selected_date %}
+                    <p>No shots logged for {{ selected_date }}.</p>
+                {% else %}
+                    <p>No shots logged yet.</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    </body>
+
+</html>

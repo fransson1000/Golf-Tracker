@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Golf Tracker – Home</title>
+        <!-- Shared stylesheet for all pages -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+
+    <body>
+        <div class="container">
+            <!-- Main home page -->
+            <h1>Welcome to Golf Tracker</h1>
+
+            <!-- Primary navigation used across the site -->
+            <nav>
+                <a href="/">Home</a>
+                <a href="/clubs">My Clubs</a>
+                <a href="/shots">Log &amp; View Shots</a>
+                <a href="/stats">View Stats</a>
+                <span class="nav-user">User: {{ session.username }}</span>
+                <a href="/logout">Log out</a>
+            </nav>
+
+            <!-- Short description of what the application does -->
+            <p>
+                Use Golf Tracker to keep a simple record of your practice: set up your bag,
+                log shots as you go, and come back later to see your averages and miss
+                patterns.
+            </p>
+
+            <!-- Quick links that guide new users through the app -->
+            <h2>Get Started</h2>
+            <ul>
+                <li><a href="/clubs">Set up or edit your bag in My Clubs</a></li>
+                <li><a href="/shots/log">Log new practice shots</a></li>
+                <li><a href="/shots">Review all logged shots</a></li>
+                <li><a href="/stats">See club averages and miss patterns</a></li>
+            </ul>
+        </div>
+    </body>
+
+</html>

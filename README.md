@@ -81,3 +81,5 @@ https://golf-tracker-83b2.onrender.com
   - `context` – optional free text notes  
 
 ---
+
+Originally developed as my final project for **Harvard CS50x 2025**.

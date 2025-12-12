@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, session, url_for
 from cs50 import SQL
 from datetime import date
@@ -5,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = "some-long-secret-string"
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 
 # Connect to the SQLite database file
 db = SQL("sqlite:///golf.db")
@@ -170,11 +171,6 @@ def determine_bag_order(name, loft_value):
 def index():
     """Show home page"""
     return render_template("index.html")
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
 
 @app.route("/clubs", methods=["GET", "POST"])
 @login_required

@@ -1,39 +1,83 @@
-# Golf-Tracker
-#### Video Demo:  https://youtu.be/yOjKQeZBtFU
-#### Description:
-
 # Golf Tracker
-## What this app is and who it’s for
 
-I built Golf Tracker because I wanted a simple way to see what my own numbers actually look like on the range. Instead of guessing how far each club goes, or relying on feel when trying a new driver or wedge setup, the idea is to log real shots and let the data show what is actually happening. You set up your bag once, record shots as you practice, and then come back later to see averages and patterns for each club.
-Golf Tracker is a small web app that runs in the browser. It uses Flask and SQLite behind the scenes, but the main goal is that it should feel like a simple, focused practice notebook rather than a technical demo.
+Golf Tracker is a small web app for tracking golf practice sessions.  
+Each user gets their own bag of clubs, can log shots for each club, and see simple stats and a dispersion-style chart to understand their tendencies.
 
-# What the user sees
+---
 
-When you open the app, you arrive at the Home page. This page explains briefly what the project is about and gives clear links to the main sections: My Clubs, Log & View Shots, and View Stats. The layout is the same on every page: a title, a simple navigation bar, and the content in a centered card. All of this basic look and feel is defined in one stylesheet, static/styles.css.
+## Live Demo
 
-On the My Clubs page, you build out your bag. Instead of typing club names freely, you choose from a dropdown with common options such as Driver, different woods and hybrids, numbered irons, and wedges with labels like PW, GW, SW, and LW. For each club you can fill in the loft in degrees and add notes, for example the exact head and shaft combination. When you add a club, it appears in a list that runs from the top of the bag down to the bottom. You do not have to think about sorting. In the background, the app uses the club type and, for wedges, the loft to decide a position value so that the bag stays in a logical order automatically. From this same page you can edit a club if something changes, or delete it if it is no longer in the bag. The edit page uses the same fields, but pre-filled with the club’s current details.
+Deployed on Render:  
+https://golf-tracker-83b2.onrender.com
 
-The Log & View Shots page combines logging new shots and reviewing old ones in one place. At the top of the page there is a form to log a shot. You can choose the date (or leave it empty and let the app use today), pick which club you hit from your current bag, enter the distance in yards, and optionally write a short result word or phrase such as center, draw, cut, slice right, or anything else you like. There is also a small dropdown that records whether the shot was on the range, on the course, or in a simulator. When you submit the form, the shot is saved and the page reloads so you stay on the same view.
+---
 
-Below the form is a table with all the shots you have logged. Each row shows the date, the club (along with its notes, so you know exactly which head and shaft were used), the distance both in yards and in meters, the result, and the context. The result text is displayed with the first letter capitalised, no matter how you typed it, which keeps the table easy to read. If you mis-type something or record an obvious mistake, you can remove that row with a Delete button. At the top of this section there is also a simple date filter: you can pick a specific day and press Show this date to see only shots from that day, or click Show all dates to return to the full log. The idea is that this page acts like a running notebook while you are practicing: you can stand on the range or in front of a simulator and simply keep adding shots as you go, and watch the list grow.
+## Features
 
-The Stats page is where the app turns that log into something more meaningful. At the top, you can again choose a specific date or look at all recorded shots. The page tells you whether you are currently viewing one day only or all days combined. Below that, it shows a table with one row for each club. For every club, you see the average carry distance in yards and meters, how many shots have been recorded, and how often those shots finished (hook) left, slightly left (a draw), center, slightly right (a cut or fade), (slice) right, or in a catch-all other category. These percentages come from the text you typed in the result box on the shots page. The app normalizes those result strings to lower case and groups them into simple buckets so the table is easy to read, even if you wrote things slightly differently from shot to shot.
+- **User accounts**
+  - Register, log in, and log out.
+  - Each user only sees their own clubs and shots.
 
-Under that table, the Stats page includes a simple dispersion chart that looks like a bird’s-eye view of a driving range. Every shot is drawn as a small colored dot inside a rectangular range. The vertical position of each dot shows how far the ball went relative to your longest shot, and the app automatically scales the top line to the next 50-yard mark above your longest recorded distance. The horizontal position reflects the miss direction: strong left misses are plotted on the far left, softer draws slightly left of center, straight or pure shots in the center, gentle cuts slightly right, and slices or big right misses on the far right. Each club has its own color, and a legend under the chart explains which color matches which club. Dashed horizontal lines marked every 50 yards make it easy to see roughly how far each cluster of shots is flying. The dots are positioned so that their centers sit close to the correct yardage line, giving a visual feel similar to looking down a real range.
+- **Club management**
+  - Add clubs with name, loft and notes (e.g. “7 iron – ZX7 / Modus 120X”).
+  - Clubs are ordered logically in the bag (driver → woods → hybrids → irons → wedges → putter) using a custom ordering system that also looks at wedge lofts.
 
-# How it is built
+- **Shot logging**
+  - Log shots with:
+    - Date (defaults to “today”)
+    - Club
+    - Distance
+    - Result / miss description (e.g. “pull left”, “block right”, “straight”)
+    - Optional context/notes (range, simulator, course, etc.)
+  - Quick entry form and a table of recent shots, with an optional date filter.
 
-From a code point of view, almost everything lives in a single Python file, app.py. That file sets up the Flask application, connects to a SQLite database file (for example golf.db), and defines the routes for the Home, My Clubs, Edit Club, Log & View Shots, Shot Delete, and Stats pages. It also contains helper code that works out where a club belongs in the bag and how to classify each shot’s result into left, center, right and the intermediate categories used in the statistics and spray chart.
-The web pages themselves are written as templates in the templates folder (index.html, clubs.html, edit_club.html, shots.html, and stats.html). They use Jinja to insert values such as club names, distances, averages, and positions into the HTML that the browser sees. All of the styling rules live in static/styles.css, which keeps the visual side in one place.
-The database has just two tables. One table stores clubs: each row represents one club in the bag, with its type, loft, notes, and the internal order value. The other table stores shots: each row represents one shot you logged, with the date, distance, result text, context, and a pointer back to which club was used. That small structure is enough to support all of the features described above.
+- **Per-club stats**
+  - Average distance for each club.
+  - Shot count per club.
+  - Basic “miss pattern” buckets (left, center-left, center, center-right, right, other) calculated from the text result.
 
-# Design choices
+- **Dispersion-style chart**
+  - Simple 2D “spray chart” built with HTML/CSS.
+  - Each dot represents a shot:
+    - Vertical position scaled by distance.
+    - Horizontal lanes for left/center/right tendencies.
+  - Different clubs get different colors and a legend.
 
-A few choices in the design are intentional. Golf Tracker supports multiple users with their own login, but once you are signed in the app is meant to feel like your personal notebook. Each golfer only sees their own bag, their own shots, and their own stats. Club types are chosen from a fixed dropdown instead of being typed completely freely. That keeps the bag in a sensible top-to-bottom order and makes the tables and charts easier to read, while the notes field lets you describe the exact head and shaft you are using.
+---
 
-Shots are kept simple on purpose. If you make a mistake, you delete the shot and enter it again rather than editing it through a separate screen. Logging new shots and reviewing existing ones live on the same page, so you can stand on the range or at a simulator and stay in one place while you practice. Both the Shots page and the Stats page have a date filter, so you can either focus on one specific practice session or look at your full history over time. The dispersion chart is built with basic HTML and CSS, with the positions of the dots calculated on the server, instead of relying on a heavy charting library. That keeps the project easy to run, easy to understand, and still visually useful.
+## Tech Stack
 
-Overall, Golf Tracker is meant to feel like a practical tool rather than just an exercise. It gives a golfer a straightforward way to build a bag, record real practice shots, and then look back at distances and dispersion patterns in a clear, visual way. The focus is on being easy to use, easy to understand, and genuinely helpful when deciding which clubs to carry and how they are actually performing.
+- **Backend:** Python, Flask
+- **Database:** SQLite (accessed via `cs50.SQL`)
+- **Frontend:** HTML, Jinja templates, CSS
+- **Auth & Security:**
+  - Passwords hashed with Werkzeug’s `generate_password_hash`
+  - Flask sessions secured with `SECRET_KEY`
+- **Deployment:** Render (Gunicorn + Python web service)
 
+---
 
+## Data Model (simplified)
+
+- **users**
+  - `id` – primary key  
+  - `username` – unique  
+  - `hash` – password hash  
+
+- **clubs**
+  - `id` – primary key  
+  - `user_id` – owner (FK → users.id)  
+  - `name` – e.g. “7 iron”, “Driver”  
+  - `loft` – numeric loft (optional)  
+  - `notes` – free text description  
+  - `bag_order` – integer used to sort clubs in a logical order  
+
+- **shots**
+  - `id` – primary key  
+  - `club_id` – FK → clubs.id  
+  - `date` – date of shot  
+  - `distance` – numeric distance  
+  - `result` – text description of miss/shape  
+  - `context` – optional free text notes  
+
+---

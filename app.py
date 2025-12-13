@@ -12,6 +12,51 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 db = SQL("sqlite:///golf.db")
 
 
+def init_db():
+    """Create tables if they do not exist (for fresh databases)."""
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            username TEXT NOT NULL UNIQUE,
+            hash TEXT NOT NULL
+        )
+        """
+    )
+
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS clubs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            user_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            loft REAL,
+            notes TEXT,
+            bag_order INTEGER,
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+        """
+    )
+
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS shots (
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+            club_id INTEGER NOT NULL,
+            date TEXT NOT NULL,
+            distance REAL NOT NULL,
+            result TEXT,
+            context TEXT,
+            FOREIGN KEY (club_id) REFERENCES clubs(id)
+        )
+        """
+    )
+
+
+# Make sure tables exist (safe to run even if they already do)
+init_db()
+
+
 def login_required(f):
     @wraps(f)
     def wrapped(*args, **kwargs):

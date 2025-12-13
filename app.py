@@ -1,4 +1,7 @@
 import os
+from pathlib import Path
+import sqlite3
+
 from flask import Flask, render_template, request, redirect, session, url_for
 from cs50 import SQL
 from datetime import date
@@ -8,8 +11,16 @@ from functools import wraps
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 
-# Connect to the SQLite database file
-db = SQL("sqlite:///golf.db")
+# Ensure the SQLite database file exists before connecting
+DB_FILENAME = "golf.db"
+db_path = Path(DB_FILENAME)
+if not db_path.exists():
+    # This will create an empty SQLite file
+    conn = sqlite3.connect(DB_FILENAME)
+    conn.close()
+
+# Now connect to the SQLite database file
+db = SQL(f"sqlite:///{DB_FILENAME}")
 
 
 def init_db():

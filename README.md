@@ -8,7 +8,7 @@ Each user gets their own bag of clubs, can log shots for each club, and see simp
 ## Live Demo
 
 Deployed on Render:  
-https://golf-tracker-83b2.onrender.com
+https://johnfransson.pythonanywhere.com/login
 
 ---
 

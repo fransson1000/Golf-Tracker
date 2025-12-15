@@ -60,11 +60,16 @@
                 </p>
 
                 <p>
-                    <label>
-                        Result (e.g. Center, Cut, Slice, Pull):
-                        <!-- Free-text result; used to classify left/center/right in stats -->
-                        <input type="text" name="result">
-                    </label>
+                    <label for="result">Result:</label>
+                    <!-- Determine which direction the shot landed -->
+                    <select id="result" name="result">
+                        <option value="">-- optional --</option>
+                        <option value="hook">Hook</option>
+                        <option value="draw">Draw</option>
+                        <option value="center">Center</option>
+                        <option value="cut">Cut</option>
+                        <option value="slice">Slice</option>
+                    </select>
                 </p>
 
                 <p>

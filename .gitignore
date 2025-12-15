@@ -1,5 +1,7 @@
-golf.db
+# Byte-compiled / cache
 __pycache__/
 *.pyc
+
+# Virtual environments
 venv/
 .venv/

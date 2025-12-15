@@ -1,4 +1,2 @@
 flask
 cs50
-werkzeug
-gunicorn
